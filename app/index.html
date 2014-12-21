@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gitbook @bonegollira</title>
+  <meta name="description" content="Note book based on Github.">
+  <meta name="keyword" content="bonegollira,gitbook,Gitbook">
+  <meta property="og:title" content="Gitbook @bonegollira">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="Note book based on Github.">
+  <meta property="og:url" content="https://bonegollira.github.com/gitbook/">
+  <meta property="og:image" content="https://bonegollira.github.com/gitbook/img/daicha.png">
+  <meta property="og:site_name" content="Gitbook @bonegollira">
+  <meta property="og:locale" content="ja_jp">
+  <link rel="canonical" href="https://bonegollira.github.com/gitbook/">
+  <link href="./components/normalize.css/normalize.css" rel="stylesheet" type="text/css">
+  <link href="./components/github-markdown-css/github-markdown.css" rel="stylesheet" type="text/css">
+  <link href="./css/all.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <div class="wrapper">
+    <main class="Gitbook">
+      <article class="Gitbook-article markdown-body" v-html="html"></article>
+    </main>
+    <nav class="Agenda">
+      <div class="Agenda-icon" v-on="click: removeSearchWord"></div>
+      <input class="Agenda-search" type="search" placeholder="type search word" v-on="keyup: filter">
+      <dl class="Agenda-list">
+        <dd class="Agenda-list-item" v-repeat="items" v-on="click: selectBook(this), click: loadBook(this)" v-class="now: now">
+          <p class="Agenda-list-item-title" v-text="title"></p>
+          <span class="Agenda-list-item-tag" v-repeat="tags" v-text="tag" v-on="click: setSearchWord"></span>
+        </dd>
+      </dl>
+    </nav>
+  </div>
+  <script src="./components/vue/dist/vue.min.js"></script>
+  <script src="./components/jquery/dist/jquery.min.js"></script>
+  <script src="./components/marked/lib/marked.js"></script>
+  <script src="./minjs/app.js"></script>
+</body>
+</html>

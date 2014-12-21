@@ -1,0 +1,31 @@
+{
+  "name": "gitbook",
+  "version": "0.0.0",
+  "description": "note book based on Github",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:bonegollira/gitbook.git"
+  },
+  "scripts": {
+    "start": "gulp",
+    "deploy": "gulp deploy",
+    "test": "gulp markdown",
+    "bower": "bower install"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "browser-sync": "*",
+    "bower": "*",
+    "gulp": "*",
+    "gulp-load-plugins": "*",
+    "gulp-plumber": "*",
+    "gulp-uglify": "*",
+    "gulp-rename": "*",
+    "gulp-stylus": "*",
+    "gulp-gh-pages": "*"
+  }
+}
