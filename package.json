@@ -26,6 +26,7 @@
     "gulp-uglify": "*",
     "gulp-rename": "*",
     "gulp-stylus": "*",
-    "gulp-gh-pages": "*"
+    "gulp-gh-pages": "*",
+    "merge-stream": "*"
   }
 }

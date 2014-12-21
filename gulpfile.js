@@ -1,22 +1,45 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var browserSync = require('browser-sync');
+var merge = require('merge-stream');
 var timestamp = require('./lib/timestamp');
 
 
 
 gulp.task('js', function () {
 
-  return gulp.src('./app/js/*.js')
-    .pipe($.plumber())
-    .pipe($.uglify())
-    .pipe(gulp.dest('./app/minjs'));
+  var merged = merge();
+
+  merged.add(
+    gulp.src('./js/*.js')
+      .pipe($.plumber())
+      .pipe($.uglify())
+      .pipe(gulp.dest('./app/minjs'))
+  );
+
+
+  merged.add(
+    gulp.src('./bower_components/vue/dist/vue.min.js').pipe(gulp.dest('./app/components/vue/dist'))
+  );
+  merged.add(
+    gulp.src('./bower_components/jquery/dist/jquery.min.js').pipe(gulp.dest('./app/components/jquery/dist'))
+  );
+  merged.add(
+    gulp.src('./bower_components/marked/lib/marked.js').pipe(gulp.dest('./app/components/marked/lib'))
+  );
+  merged.add(
+    gulp.src('./bower_components/github-markdown-css/github-markdown.css').pipe(gulp.dest('./app/components/github-markdown-css'))
+  );
+  merged.add(
+    gulp.src('./bower_components/normalize.css/normalize.css').pipe(gulp.dest('./app/components/normalize.css'))
+  );
+
 });
 
 
 
 gulp.task('stylus', function () {
-  return gulp.src('./app/stylus/*.stylus')
+  return gulp.src('./stylus/*.stylus')
     .pipe($.plumber())
     .pipe($.stylus({
       compress: true
@@ -92,25 +115,17 @@ gulp.task('server.reload', ['build'], function () {
 gulp.task('watch', function () {
   gulp.watch([
     './app/index.html',
-    './app/js/*.js',
-    './app/stylus/*.stylus'
+    './js/*.js',
+    './stylus/*.stylus',
+    './markdown/*.md'
   ], ['server.reload']);
 });
 
 
 
-gulp.task('gh-pagse', ['build'], function () {
+gulp.task('gh-pages', ['build'], function () {
   var remoteUrl = require('./package.json').repository.url;
-  return gulp.src([
-      './app/index.html',
-      './app/minjs/*',
-      './app/css/*',
-      './app/components/vue/dist/vue.min.js',
-      './app/components/jquery/dist/jquery.min.js',
-      './app/components/marked/lib/marked.js',
-      './app/components/github-markdown-css/github-markdown.css',
-      './app/components/normalize.css/normalize.css'
-    ])
+  return gulp.src('./app/**')
     .pipe($.ghPages({remoteUrl: remoteUrl}));
 });
 
