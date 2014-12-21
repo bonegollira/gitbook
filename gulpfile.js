@@ -57,27 +57,32 @@ gulp.task('markdown', function () {
   del.sync('./app/md');
   fs.mkdirSync('./app/md');
 
-  fs.readdirSync('./markdown').map(function (md) {
-    return {
-      name: md,
-      full: __dirname + '/markdown/' + md
-    };
-  }).forEach(function (info) {
-    var markdown = fs.readFileSync(info.full, {encoding: 'utf-8'});
-    var lines = markdown.split('\n');
-    var mtime = fs.statSync(info.full).mtime + "";
+  fs.readdirSync('./markdown')
+    .filter(function (md) {
+      return !/\.swp$/.test(md);
+    })
+    .map(function (md) {
+      return {
+        name: md,
+        full: __dirname + '/markdown/' + md
+      };
+    })
+    .forEach(function (info) {
+      var markdown = fs.readFileSync(info.full, {encoding: 'utf-8'});
+      var lines = markdown.split('\n');
+      var mtime = fs.statSync(info.full).mtime + "";
 
-    mdjson.push({
-      title: lines[1].replace('# ', ''),
-      tags: (JSON.parse(lines[0])).map(function (tag) {return {tag: tag};}),
-      timestamp: timestamp.mtime2__(mtime),
-      file: info.name
+      mdjson.push({
+        title: lines[1].replace('# ', ''),
+        tags: (JSON.parse(lines[0])).map(function (tag) {return {tag: tag};}),
+        timestamp: timestamp.mtime2__(mtime),
+        file: info.name
+      });
+
+      markdown = lines.slice(1).join('\n');
+
+      fs.writeFileSync('./app/md/' + info.name, markdown);
     });
-
-    markdown = lines.slice(1).join('\n');
-
-    fs.writeFileSync('./app/md/' + info.name, markdown);
-  });
 
   mdjson.sort(function (prev, next) {
     var prevTime = timestamp.__2Num(prev.timestamp);
