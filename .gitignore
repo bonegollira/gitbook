@@ -2,7 +2,7 @@
 *.swp
 node_modules
 npm-debug.log
-app/bower_components
-!app/bower_components/vue/dist/vue.min.js
+app/components
 app/css
 app/minjs
+app/md

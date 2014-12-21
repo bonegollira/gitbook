@@ -12,7 +12,6 @@
   "scripts": {
     "start": "gulp",
     "deploy": "gulp deploy",
-    "test": "gulp markdown",
     "bower": "bower install"
   },
   "dependencies": {
@@ -20,6 +19,7 @@
   "devDependencies": {
     "browser-sync": "*",
     "bower": "*",
+    "del": "*",
     "gulp": "*",
     "gulp-load-plugins": "*",
     "gulp-plumber": "*",

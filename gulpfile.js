@@ -27,8 +27,12 @@ gulp.task('stylus', function () {
 
 
 gulp.task('markdown', function () {
+  var del = require('del');
   var fs = require('fs');
   var mdjson = [];
+
+  del.sync('./app/md');
+  fs.mkdirSync('./app/md');
 
   fs.readdirSync('./markdown').map(function (md) {
     return {
