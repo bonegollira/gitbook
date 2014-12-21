@@ -1,8 +1,0 @@
-.DS_Store
-*.swp
-node_modules
-npm-debug.log
-app/components
-app/css
-app/minjs
-app/md
