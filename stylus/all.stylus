@@ -6,17 +6,17 @@ $nav-color = $main-backgroundColor;
 $nav-backgroundColor = $main-color;
 $font-family = 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
 
-
-body {
-  font-family: $font-fmaliy;
+html, body {
+  height: 100%;
+  overflow: hidden;
 }
 
-.markdown-body {
-  color: $main-color;
-  font-family: $font-fmaliy;
+body {
+  font-family: $font-family;
 }
 
 .wrapper {
+  height: 100%;
   display: -webkit-flex;
   display: -moz-flex;
   display: flex;
@@ -25,9 +25,16 @@ body {
   align-items: flex-start
 }
 
+.markdown-body {
+  color: $main-color;
+  font-family: $font-family;
+}
+
 .Gitbook {
   width: 70%;
+  height: 100%;
   padding: 0 20px;
+  overflow: scroll;
   color: $main-color;
   background-color: $main-backgroundColor;
 
@@ -39,6 +46,13 @@ body {
 
 .Agenda {
   width: 30%;
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
   position: relative;
   text-align: center;
   color: $nav-color;
@@ -74,42 +88,52 @@ body {
     }
   }
 
-  .Agenda-list {
+  .Agenda-list-wrapper {
     width: 100%;
-    margin: 0px auto;
-    box-sizing: border-box;
-    text-align: left;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-box-flex: 1;
+    flex: 1;
 
-    .Agenda-list-item {
+    .Agenda-list {
       width: 100%;
-      margin: 20px auto;
-      padding: 10px 20px;
+      margin: 0px auto 85px;
+      overflow: scroll;
       box-sizing: border-box;
-      cursor: pointer;
+      text-align: left;
 
-      .Agenda-list-item-title {
-        margin: 0;
-      }
+      .Agenda-list-item {
+        width: 100%;
+        margin: 20px auto;
+        padding: 10px 20px;
+        box-sizing: border-box;
+        cursor: pointer;
+        word-wrap: break-word;
 
-      .Agenda-list-item-tag {
-        margin-right: 10px;
-        color: #999;
-        font-size: 0.8em;
-
-        &:hover {
-          color: #ddd;
+        .Agenda-list-item-title {
+          margin: 0;
         }
+
+        .Agenda-list-item-tag {
+          color: #999;
+          font-size: 0.8em;
+
+          &:hover {
+            color: #ddd;
+          }
+        }
+
       }
 
-    }
+      .now {
+        color: $main-color;
+        background-color: $main-backgroundColor;
+      }
 
-    .now {
-      color: $main-color;
-      background-color: $main-backgroundColor;
-    }
-
-    .hidden {
-      display: none;
+      .hidden {
+        display: none;
+      }
     }
 
   }
