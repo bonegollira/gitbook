@@ -11,40 +11,36 @@ gulp.task('js', function () {
   var merged = merge();
 
   merged.add(
-    gulp.src('./js/*.js')
+    gulp.src('./app/js/*.js')
       .pipe($.plumber())
       .pipe($.uglify())
-      .pipe(gulp.dest('./app/minjs'))
+      .pipe(gulp.dest('./.app/js'))
   );
 
+  merged.add(
+    gulp.src([
+      './bower_components/vue/dist/vue.min.js',
+      './bower_components/jquery/dist/jquery.min.js',
+      './bower_components/marked/lib/marked.js',
+      './bower_components/github-markdown-css/github-markdown.css',
+      './bower_components/normalize.css/normalize.css'
+    ])
+      .pipe(gulp.dest('./.app/components'))
+  );
 
-  merged.add(
-    gulp.src('./bower_components/vue/dist/vue.min.js').pipe(gulp.dest('./app/components/vue/dist'))
-  );
-  merged.add(
-    gulp.src('./bower_components/jquery/dist/jquery.min.js').pipe(gulp.dest('./app/components/jquery/dist'))
-  );
-  merged.add(
-    gulp.src('./bower_components/marked/lib/marked.js').pipe(gulp.dest('./app/components/marked/lib'))
-  );
-  merged.add(
-    gulp.src('./bower_components/github-markdown-css/github-markdown.css').pipe(gulp.dest('./app/components/github-markdown-css'))
-  );
-  merged.add(
-    gulp.src('./bower_components/normalize.css/normalize.css').pipe(gulp.dest('./app/components/normalize.css'))
-  );
+  return merged;
 
 });
 
 
 
 gulp.task('stylus', function () {
-  return gulp.src('./stylus/*.stylus')
+  return gulp.src('./app/stylus/*.stylus')
     .pipe($.plumber())
     .pipe($.stylus({
-      compress: true
+//       compress: true
     }))
-    .pipe(gulp.dest('./app/css'));
+    .pipe(gulp.dest('./.app/css'));
 });
 
 
@@ -54,17 +50,14 @@ gulp.task('markdown', function () {
   var fs = require('fs');
   var mdjson = [];
 
-  del.sync('./app/md');
-  fs.mkdirSync('./app/md');
-
-  fs.readdirSync('./markdown')
+  fs.readdirSync('./app/md')
     .filter(function (md) {
       return !/\.swp$/.test(md);
     })
     .map(function (md) {
       return {
         name: md,
-        full: __dirname + '/markdown/' + md
+        full: __dirname + '/app/md/' + md
       };
     })
     .forEach(function (info) {
@@ -81,7 +74,7 @@ gulp.task('markdown', function () {
 
       markdown = lines.slice(1).join('\n');
 
-      fs.writeFileSync('./app/md/' + info.name, markdown);
+      fs.writeFileSync('./.app/md/' + info.name, markdown);
     });
 
   mdjson.sort(function (prev, next) {
@@ -90,9 +83,10 @@ gulp.task('markdown', function () {
     return prevTime < nextTime;
   });
 
-  fs.writeFileSync('./app/md/md.json', JSON.stringify(mdjson));
+  fs.writeFileSync('./.app/md/md.json', JSON.stringify(mdjson));
 
 });
+
 
 
 
@@ -100,7 +94,7 @@ gulp.task('server', ['build'], function () {
   browserSync({
     port: 8888,
     server: {
-      baseDir: "app"
+      baseDir: ".app"
     },
     ghostMode: false,
     notify: false,
@@ -120,9 +114,9 @@ gulp.task('server.reload', ['build'], function () {
 gulp.task('watch', function () {
   gulp.watch([
     './app/index.html',
-    './js/*.js',
-    './stylus/*.stylus',
-    './markdown/*.md'
+    './app/js/*.js',
+    './app/stylus/*.stylus',
+    './app/md/*.md'
   ], ['server.reload']);
 });
 
@@ -130,13 +124,19 @@ gulp.task('watch', function () {
 
 gulp.task('gh-pages', ['build'], function () {
   var remoteUrl = require('./package.json').repository.url;
-  return gulp.src('./app/**')
+  return gulp.src('./.app/**')
     .pipe($.ghPages({remoteUrl: remoteUrl}));
 });
 
 
 
-gulp.task('build', ['js', 'stylus', 'markdown']);
+gulp.task('build', ['js', 'stylus', 'markdown'], function () {
+  return gulp.src([
+    './app/index.html',
+    './app/img'
+  ])
+    .pipe(gulp.dest('./.app'));
+});
 
 
 
