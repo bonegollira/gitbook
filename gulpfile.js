@@ -56,35 +56,38 @@ gulp.task('markdown', function () {
 
   var mdjson = [];
 
-  return gulp.src('./app/md/*.md')
+  return gulp.src('./app/md/*')
 
-    .pipe(map(function (file, callback) {
+    .pipe(
+      $.if(/\.md$/, map(function (file, callback) {
+        var lines = file.contents.toString('utf8').split('\n');
+        var mtime = fs.statSync(file.path).mtime + "";
 
-      var lines = file.contents.toString('utf8').split('\n');
-      var mtime = fs.statSync(file.path).mtime + "";
+        mdjson.push({
+          title: lines[1].replace(/^#\s*/, ''),
+          tags: JSON.parse(lines[0]),
+          timestamp: timestamp.mtime2__(mtime),
+          file: path.basename(file.path)
+        });
 
-      mdjson.push({
-        title: lines[1].replace(/^#\s*/, ''),
-        tags: JSON.parse(lines[0]),
-        timestamp: timestamp.mtime2__(mtime),
-        file: path.basename(file.path)
-      });
+        file.contents = new Buffer(lines.slice(1).join('\n'));
+        callback(null, file);
+      }))
+    )
 
-      file.contents = new Buffer(lines.slice(1).join('\n'));
-      callback(null, file);
-    }))
+    .pipe(
+      $.if(/\.json/, map(function (file, callback) {
+        mdjson.sort(function (prev, next) {
+          var prevTime = timestamp.__2Num(prev.timestamp);
+          var nextTime = timestamp.__2Num(next.timestamp);
+          return prevTime < nextTime;
+        });
+        file.contents = new Buffer(JSON.stringify(mdjson));
+        callback(null, file);
+      }))
+    )
 
-    .pipe(gulp.dest('./.app/md'))
-
-    .on('end', function () {
-      mdjson.sort(function (prev, next) {
-        var prevTime = timestamp.__2Num(prev.timestamp);
-        var nextTime = timestamp.__2Num(next.timestamp);
-        return prevTime < nextTime;
-      });
-      fs.writeFileSync('./.app/md/md.json', JSON.stringify(mdjson));
-    });
-
+    .pipe(gulp.dest('./.app/md'));
 });
 
 
