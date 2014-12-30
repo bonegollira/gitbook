@@ -25,7 +25,6 @@
     "gulp-plumber": "*",
     "gulp-inject": "*",
     "gulp-if": "*",
-    "gulp-header": "*",
     "gulp-uglify": "*",
     "gulp-rename": "*",
     "gulp-stylus": "*",
