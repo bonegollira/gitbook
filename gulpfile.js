@@ -1,96 +1,113 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var browserSync = require('browser-sync');
-var merge = require('merge-stream');
+var map = require('map-stream');
+var mainBowerFiles = require('main-bower-files');
 var timestamp = require('./lib/timestamp');
+var del = require('del');
+var fs = require('fs');
+var path = require('path');
+var run = require('run-sequence');
+
+
+
+gulp.task('clean', function () {
+
+  del.sync('./.app');
+
+});
 
 
 
 gulp.task('js', function () {
 
-  var merged = merge();
+  return gulp.src('./app/js/*.js')
+    .pipe($.plumber())
+    .pipe($.uglify())
+    .pipe(gulp.dest('./.app/js'));
 
-  merged.add(
-    gulp.src('./app/js/*.js')
-      .pipe($.plumber())
-      .pipe($.uglify())
-      .pipe(gulp.dest('./.app/js'))
-  );
+});
 
-  merged.add(
-    gulp.src([
-      './bower_components/vue/dist/vue.min.js',
-      './bower_components/jquery/dist/jquery.min.js',
-      './bower_components/marked/lib/marked.js',
-      './bower_components/github-markdown-css/github-markdown.css',
-      './bower_components/normalize.css/normalize.css'
-    ])
-      .pipe(gulp.dest('./.app/components'))
-  );
 
-  return merged;
+
+gulp.task('components', function () {
+
+  return gulp.src(mainBowerFiles())
+    .pipe(gulp.dest('./.app/components'));
 
 });
 
 
 
 gulp.task('stylus', function () {
+
   return gulp.src('./app/stylus/*.stylus')
     .pipe($.plumber())
     .pipe($.stylus({
-//       compress: true
+      compress: true
     }))
     .pipe(gulp.dest('./.app/css'));
+
 });
 
 
 
 gulp.task('markdown', function () {
-  var del = require('del');
-  var fs = require('fs');
+
   var mdjson = [];
 
-  fs.readdirSync('./app/md')
-    .filter(function (md) {
-      return !/\.swp$/.test(md);
-    })
-    .map(function (md) {
-      return {
-        name: md,
-        full: __dirname + '/app/md/' + md
-      };
-    })
-    .forEach(function (info) {
-      var markdown = fs.readFileSync(info.full, {encoding: 'utf-8'});
-      var lines = markdown.split('\n');
-      var mtime = fs.statSync(info.full).mtime + "";
+  return gulp.src('./app/md/*.md')
+
+    .pipe(map(function (file, callback) {
+
+      var lines = file.contents.toString('utf8').split('\n');
+      var mtime = fs.statSync(file.path).mtime + "";
 
       mdjson.push({
-        title: lines[1].replace('# ', ''),
-        tags: (JSON.parse(lines[0])).map(function (tag) {return {tag: tag};}),
+        title: lines[1].replace(/^#\s*/, ''),
+        tags: JSON.parse(lines[0]),
         timestamp: timestamp.mtime2__(mtime),
-        file: info.name
+        file: path.basename(file.path)
       });
 
-      markdown = lines.slice(1).join('\n');
+      file.contents = new Buffer(lines.slice(1).join('\n'));
+      callback(null, file);
+    }))
 
-      fs.writeFileSync('./.app/md/' + info.name, markdown);
+    .pipe(gulp.dest('./.app/md'))
+
+    .on('end', function () {
+      mdjson.sort(function (prev, next) {
+        var prevTime = timestamp.__2Num(prev.timestamp);
+        var nextTime = timestamp.__2Num(next.timestamp);
+        return prevTime < nextTime;
+      });
+      fs.writeFileSync('./.app/md/md.json', JSON.stringify(mdjson));
     });
-
-  mdjson.sort(function (prev, next) {
-    var prevTime = timestamp.__2Num(prev.timestamp);
-    var nextTime = timestamp.__2Num(next.timestamp);
-    return prevTime < nextTime;
-  });
-
-  fs.writeFileSync('./.app/md/md.json', JSON.stringify(mdjson));
 
 });
 
 
 
+gulp.task('static', function () {
+
+  return gulp.src([
+    './app/**/*',
+    '!./app/js',
+    '!./app/js/*',
+    '!./app/md',
+    '!./app/md/*',
+    '!./app/stylus',
+    '!./app/stylus/*'
+  ])
+    .pipe(gulp.dest('./.app'));
+
+});
+
+
 
 gulp.task('server', ['build'], function () {
+
   browserSync({
     port: 8888,
     server: {
@@ -101,41 +118,47 @@ gulp.task('server', ['build'], function () {
     scrollProportionally: false,
     browser: "google chrome"
   });
+
 });
 
 
 
 gulp.task('server.reload', ['build'], function () {
+
   browserSync.reload();
+
 });
 
 
 
 gulp.task('watch', function () {
+
   gulp.watch([
     './app/index.html',
     './app/js/*.js',
     './app/stylus/*.stylus',
     './app/md/*.md'
   ], ['server.reload']);
+
 });
 
 
 
 gulp.task('gh-pages', ['build'], function () {
+
   var remoteUrl = require('./package.json').repository.url;
+
   return gulp.src('./.app/**')
     .pipe($.ghPages({remoteUrl: remoteUrl}));
+
 });
 
 
 
-gulp.task('build', ['js', 'stylus', 'markdown'], function () {
-  return gulp.src([
-    './app/index.html',
-    './app/img'
-  ])
-    .pipe(gulp.dest('./.app'));
+gulp.task('build', function (callback) {
+
+  return run('clean', ['js', 'components', 'stylus', 'markdown', 'static'], callback);
+
 });
 
 

@@ -8,5 +8,22 @@
     "marked": "0.3.2",
     "github-markdown-css": "2.0.1",
     "normalize.css": "3.0.2"
+  },
+  "overrides": {
+    "vue": {
+      "main": "dist/vue.min.js"
+    },
+    "jquery": {
+      "main": "dist/jquery.min.js"
+    },
+    "marked": {
+      "main": "lib/marked.js"
+    },
+    "gitub-markdown-css": {
+      "main": "github-markdown.css"
+    },
+    "normalize.css": {
+      "main": "normalize.css"
+    }
   }
 }

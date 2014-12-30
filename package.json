@@ -27,6 +27,8 @@
     "gulp-rename": "*",
     "gulp-stylus": "*",
     "gulp-gh-pages": "*",
-    "merge-stream": "*"
+    "map-stream": "*",
+    "main-bower-files": "*",
+    "run-sequence": "*"
   }
 }
