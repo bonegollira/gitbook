@@ -53,7 +53,7 @@
           return word.toLowerCase().trim();
         });
 
-        $.each(self.items, function (i, item) {
+        self.items.forEach(function (item, i) {
           item.isHidden = words.some(function (word) {
             return item.title.toLowerCase().indexOf(word) < 0 && item.tags.every(function (tag) {
               return tag.toLowerCase().indexOf(word) < 0;
@@ -83,44 +83,42 @@
         this.filter();
       },
 
-      selectBook: function (item) {
-        var self = this;
-        $.each(self.items, function (i) {
-          self.items[i].isNow = i === item.$index;
+      selectBook: function (index) {
+        this.items.forEach(function (item, i) {
+          item.isNow = i === index;
         });
       },
 
-      loadBook: function (item, index) {
-        $.ajax({
-          url: MDPATH + item.file,
-          dataType: 'text',
-          cache: false
-        }).success(function (md) {
+      loadBook: function (index) {
+        var self = this;
+        var item = self.items[index];
+
+        superagent.get(MDPATH + item.file).end(function (response) {
+          var md = response.text;
           Gitbook.setMarkDown(md);
+          self.items.forEach(function (item, i) {
+            item.isNow = i === index;
+          });
         });
+
       }
 
     }
   });
 
-  $.ajax({
-    url: API,
-    dataType: 'json',
-    cache: false
-  }).success(function (json) {
+  superagent.get(API).end(function (response) {
     var query = location.search.replace('?', '') + '.md';
     var index = 0;
 
-    json.forEach(function (item, i) {
+    Agenda.items = response.body.map(function (item, i) {;
       if (item.file === query) {
         index = i;
       }
       item.isNow = false;
       item.isHidden = false;
+      return item;
     });
-    json[index].isNow = true;
-    Agenda.items = json;
-    Agenda.loadBook(json[index]);
+    Agenda.loadBook(index);
   });
 
 }());
