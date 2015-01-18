@@ -80,7 +80,7 @@ gulp.task('markdown', function () {
         mdjson.sort(function (prev, next) {
           var prevTime = timestamp.__2Num(prev.timestamp);
           var nextTime = timestamp.__2Num(next.timestamp);
-          return prevTime < nextTime;
+          return prevTime > nextTime ? -1 : 1;
         });
         file.contents = new Buffer(JSON.stringify(mdjson));
         callback(null, file);
