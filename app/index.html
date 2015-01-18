@@ -25,6 +25,10 @@
     </main>
     <nav class="Agenda">
       <div class="Agenda-icon" v-on="click:removeSearchWord"></div>
+      <div class="Agenda-info">
+        <p v-show="!searchWord.length">Gitbook</p>
+        <p v-show="searchWord.length"><span v-text="hitCount"></span><span>hit</span></p>
+      </div>
       <input class="Agenda-search" type="search" placeholder="type search word" v-model="searchWord" v-on="keyup:filter">
       <div class="Agenda-list-wrapper">
         <dl class="Agenda-list">
