@@ -7,13 +7,10 @@
     pedantic: false,
     sanitize: true,
     smartLists: true,
-    smartypants: false
-    /*
+    smartypants: false,
     highlight: function(code, lang) {
-console.log(code);
-      return code;
+      return hljs.highlightAuto(code).value;
     }
-    */
   });
 
   var MDPATH = location.origin + location.pathname.split('/').slice(0, -1).join('/') + '/md/';
