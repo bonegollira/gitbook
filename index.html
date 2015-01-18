@@ -24,12 +24,12 @@
     </main>
     <nav class="Agenda">
       <div class="Agenda-icon" v-on="click: removeSearchWord"></div>
-      <input class="Agenda-search" type="search" placeholder="type search word" v-on="keyup: filter">
+      <input class="Agenda-search" type="search" placeholder="type search word" v-on="keyup:filter">
       <div class="Agenda-list-wrapper">
         <dl class="Agenda-list">
-          <dd class="Agenda-list-item" v-repeat="items" v-on="click: selectBook(this), click: loadBook(this)" v-class="now: now">
+          <dd class="Agenda-list-item" v-repeat="items" v-on="click:selectBook(this), click:loadBook(this)" v-class="now:isNow, hidden:isHidden">
             <p class="Agenda-list-item-title" v-text="title"></p>
-            <span class="Agenda-list-item-tag" v-repeat="tags" v-on="click: setSearchWord">{{ $value }}&nbsp;</span>
+            <span class="Agenda-list-item-tag" v-repeat="tags" v-on="click:setSearchWord">{{ $value }}&nbsp;</span>
           </dd>
         </dl>
       </div>
