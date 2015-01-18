@@ -160,7 +160,7 @@ gulp.task('gh-pages', ['build'], function () {
 
 gulp.task('build', function (callback) {
 
-  return run('clean', ['js', 'components', 'stylus', 'markdown', 'static'], callback);
+  run('clean', ['js', 'components', 'stylus', 'markdown', 'static'], callback);
 
 });
 

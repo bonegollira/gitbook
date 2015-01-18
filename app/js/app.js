@@ -1,9 +1,5 @@
 (function () {
 
-  jQuery.expr[':'].lowercontains = function(a, i, m) {
-    return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
-  };
-
   marked.setOptions({
     gfm: true,
     tables: true,
@@ -54,9 +50,13 @@ console.log(code);
     methods: {
 
       filter: function (e) {
-        var text = $('.Agenda-search').val().toLowerCase();
-        $('.Agenda-list-item').removeClass('hidden');
-        $('.Agenda-list-item:not(:lowercontains("' + text  + '"))').addClass('hidden');
+        var self = this;
+        var text = e.target.value.toLowerCase();
+        $.each(self.items, function (i, item) {
+          item.isHidden = item.title.toLowerCase().indexOf(text) < 0 && item.tags.every(function (tag) {
+            return tag.toLowerCase().indexOf(text) < 0;
+          });
+        });
       },
 
       setSearchWord: function (e) {
@@ -73,7 +73,7 @@ console.log(code);
       selectBook: function (item) {
         var self = this;
         $.each(self.items, function (i) {
-          self.items[i].now = i === item.$index;
+          self.items[i].isNow = i === item.$index;
         });
       },
 
@@ -102,9 +102,10 @@ console.log(code);
       if (item.file === query) {
         index = i;
       }
-      json[i].now = false;
+      item.isNow = false;
+      item.isHidden = false;
     });
-    json[index].now = true;
+    json[index].isNow = true;
     Agenda.items = json;
     Agenda.loadBook(json[index]);
   });
