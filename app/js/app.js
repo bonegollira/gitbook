@@ -49,17 +49,32 @@
 
       filter: function () {
         var self = this;
-        var text = self.searchWord.toLowerCase();
+        var words = self.searchWord.split(' ').map(function (word) {
+          return word.toLowerCase().trim();
+        });
+
         $.each(self.items, function (i, item) {
-          item.isHidden = item.title.toLowerCase().indexOf(text) < 0 && item.tags.every(function (tag) {
-            return tag.toLowerCase().indexOf(text) < 0;
+          item.isHidden = words.some(function (word) {
+            return item.title.toLowerCase().indexOf(word) < 0 && item.tags.every(function (tag) {
+              return tag.toLowerCase().indexOf(word) < 0;
+            });
           });
         });
       },
 
-      setSearchWord: function (e) {
+      toggleSearchWord: function (e) {
         e.stopPropagation();
-        this.searchWord = e.target.textContent.trim();
+
+        var searchWord = this.searchWord;
+        var newText = e.target.textContent.trim();
+
+        if (searchWord.indexOf(newText) < 0) {
+          searchWord += ' ' + newText;
+        }
+        else {
+          searchWord = searchWord.replace(new RegExp(newText, 'g'), '');
+        }
+        this.searchWord = searchWord.replace(/ +/g, ' ').trim();
         this.filter();
       },
 
