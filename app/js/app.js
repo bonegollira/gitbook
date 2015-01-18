@@ -42,24 +42,29 @@
 
     data: {
       searchWord: '',
+      hitCount: 0,
       items: []
     },
 
     methods: {
 
       filter: function () {
-        var self = this;
-        var words = self.searchWord.split(' ').map(function (word) {
+        var words = this.searchWord.split(' ').map(function (word) {
           return word.toLowerCase().trim();
         });
+        var hitCount = this.items.length;
 
-        self.items.forEach(function (item, i) {
-          item.isHidden = words.some(function (word) {
+        this.items.forEach(function (item, i) {
+          var isHidden = words.some(function (word) {
             return item.title.toLowerCase().indexOf(word) < 0 && item.tags.every(function (tag) {
               return tag.toLowerCase().indexOf(word) < 0;
             });
           });
+          isHidden && hitCount--;
+          item.isHidden = isHidden;
         });
+
+        this.hitCount = hitCount;
       },
 
       toggleSearchWord: function (e) {
