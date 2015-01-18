@@ -41,14 +41,15 @@
     el: '.Agenda',
 
     data: {
+      searchWord: '',
       items: []
     },
 
     methods: {
 
-      filter: function (e) {
+      filter: function () {
         var self = this;
-        var text = e.target.value.toLowerCase();
+        var text = self.searchWord.toLowerCase();
         $.each(self.items, function (i, item) {
           item.isHidden = item.title.toLowerCase().indexOf(text) < 0 && item.tags.every(function (tag) {
             return tag.toLowerCase().indexOf(text) < 0;
@@ -58,12 +59,12 @@
 
       setSearchWord: function (e) {
         e.stopPropagation();
-        $('.Agenda-search').val($(e.target).text());
+        this.searchWord = e.target.textContent.trim();
         this.filter();
       },
 
       removeSearchWord: function (e) {
-        $('.Agenda-search').val('');
+        this.searchWord = '';
         this.filter();
       },
 
