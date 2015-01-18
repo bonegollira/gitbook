@@ -24,7 +24,9 @@
       <article class="Gitbook-article markdown-body" v-html="html"></article>
     </main>
     <nav class="Agenda">
-      <div class="Agenda-icon" v-on="click:removeSearchWord"></div>
+      <div class="Agenda-icon" v-on="click:removeSearchWord">
+        <img v-class="cancel:searchWord.length" width="44px" src="./img/daicha.png">
+      </div>
       <div class="Agenda-info">
         <p v-show="!searchWord.length">Gitbook</p>
         <p v-show="searchWord.length"><span v-text="hitCount"></span><span>hit</span></p>
