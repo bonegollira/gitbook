@@ -28,7 +28,7 @@
       <input class="Agenda-search" type="search" placeholder="type search word" v-model="searchWord" v-on="keyup:filter">
       <div class="Agenda-list-wrapper">
         <dl class="Agenda-list">
-          <dd class="Agenda-list-item" v-repeat="items" v-on="click:selectBook(this), click:loadBook(this)" v-class="now:isNow" v-show="!isHidden">
+          <dd class="Agenda-list-item" v-repeat="items" v-on="click:loadBook(this.$index)" v-class="now:isNow" v-show="!isHidden">
             <p class="Agenda-list-item-title" v-text="title"></p>
             <span class="Agenda-list-item-tag" v-repeat="tags" v-on="click:toggleSearchWord">{{ $value }}&nbsp;</span>
           </dd>
@@ -37,9 +37,9 @@
     </nav>
   </div>
   <script src="./components/vue.min.js"></script>
-  <script src="./components/jquery.min.js"></script>
   <script src="./components/marked.js"></script>
   <script src="./components/highlight.pack.js"></script>
+  <script src="./components/superagent.js"></script>
   <script src="./js/app.js"></script>
 </body>
 </html>
