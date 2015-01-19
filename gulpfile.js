@@ -74,6 +74,7 @@ gulp.task('markdown', function () {
         callback(null, file);
       }))
     )
+    .pipe(gulp.dest('./.app/md'))
 
     .pipe(
       $.if(/\.json/, map(function (file, callback) {
@@ -86,7 +87,6 @@ gulp.task('markdown', function () {
         callback(null, file);
       }))
     )
-
     .pipe(gulp.dest('./.app/md'));
 });
 
