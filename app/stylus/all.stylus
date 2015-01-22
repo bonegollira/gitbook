@@ -9,6 +9,7 @@ $font-family = 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
 html, body {
   height: 100%;
   overflow: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
