@@ -96,6 +96,10 @@ body {
     font-size: 0.8em;
     text-align: center;
     color: #909090;
+
+    .hidden {
+      display: none;
+    }
   }
 
   .Agenda-search {
