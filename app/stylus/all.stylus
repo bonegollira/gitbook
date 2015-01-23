@@ -9,6 +9,7 @@ $font-family = 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
 html, body {
   height: 100%;
   overflow: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -95,6 +96,10 @@ body {
     font-size: 0.8em;
     text-align: center;
     color: #909090;
+
+    .hidden {
+      display: none;
+    }
   }
 
   .Agenda-search {
@@ -144,6 +149,10 @@ body {
 
           &:hover {
             color: #ddd;
+          }
+
+          &:not(:last-child) {
+            margin-right: 7px;
           }
         }
 

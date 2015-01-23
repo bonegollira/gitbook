@@ -29,14 +29,14 @@
       </div>
       <div class="Agenda-info">
         <p v-show="!searchWord.length">Gitbook</p>
-        <p v-show="searchWord.length"><span v-text="hitCount"></span><span>hit</span></p>
+        <p class="hidden" v-show="searchWord.length"><span v-text="hitCount"></span><span>hit</span></p>
       </div>
       <input class="Agenda-search" type="search" placeholder="type search word" v-model="searchWord" v-on="keyup:filter">
       <div class="Agenda-list-wrapper">
         <dl class="Agenda-list">
           <dd class="Agenda-list-item" v-repeat="items" v-on="click:loadBook(this.$index)" v-class="now:isNow" v-show="!isHidden">
             <p class="Agenda-list-item-title" v-text="title"></p>
-            <span class="Agenda-list-item-tag" v-repeat="tags" v-on="click:toggleSearchWord">{{ $value }}&nbsp;</span>
+            <span class="Agenda-list-item-tag" v-repeat="tags" v-text="$value" v-on="click:toggleSearchWord"></span>
           </dd>
         </dl>
       </div>
