@@ -146,6 +146,10 @@ body {
           &:hover {
             color: #ddd;
           }
+
+          &:not(:last-child) {
+            margin-right: 7px;
+          }
         }
 
       }
