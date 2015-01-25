@@ -30,6 +30,7 @@
         setMarkDown: function (md) {
           this.md = md;
           this.html = marked(md);
+          this.$el.scrollTop = 0;
         }
 
       }
