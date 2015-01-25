@@ -91,8 +91,6 @@ window.Obj = Obj;
 
 ## Gulpタスク
 
-Gulpで書くと
-
 ```
 var gulp = reqire('gulp');
 var $ = require('gulp-load-plugins')();
@@ -121,5 +119,3 @@ gulp.task('default', function () {
 
 });
 ```
-
-となる。
