@@ -1,4 +1,4 @@
-["javascipt", "gulp", "es6"]
+["javascript", "gulp", "es6"]
 # 6to5で変換した後closure compilerで圧縮する
 
 [6to5](http://6to5.org/)
