@@ -99,7 +99,7 @@ gulp.task('default', function () {
   return gulp.src('./src/*.js')
     // 必要であればsource mapを追加
     //.pipe($.sourcemaps.init())
-    .pipe($.6to5({
+    .pipe($['6to5']({
       blacklist: [
         // ファイルの先頭に追加する`'use strict';`を外す
         'useStrict'
