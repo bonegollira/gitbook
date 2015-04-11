@@ -14,7 +14,6 @@
   });
 
   var MDPATH = location.origin + location.pathname.split('/').slice(0, -1).join('/') + '/md/';
-  var API = MDPATH + 'md.json';
 
   var Gitbook = new Vue({
 
@@ -112,19 +111,17 @@
     }
   });
 
-  superagent.get(API).end(function (response) {
-    var query = location.search.replace('?', '') + '.md';
-    var index = 0;
+  var query = location.search.replace('?', '') + '.md';
+  var index = 0;
 
-    Agenda.items = response.body.map(function (item, i) {;
-      if (item.file === query) {
-        index = i;
-      }
-      item.isNow = false;
-      item.isHidden = false;
-      return item;
-    });
-    Agenda.loadBook(index);
+  Agenda.items = window.config.mdJson.map(function (item, i) {;
+    if (item.file === query) {
+      index = i;
+    }
+    item.isNow = false;
+    item.isHidden = false;
+    return item;
   });
+  Agenda.loadBook(index);
 
 }());
