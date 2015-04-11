@@ -116,7 +116,6 @@ gulp.task('static', function () {
 gulp.task('inject', function () {
   var latestArticleJson = mdjson[0];
   var latestArticlePath = path.resolve('.app/md', latestArticleJson.file);
-  console.log(latestArticlePath);
 
   return gulp.src('app/index.html')
     .pipe($.inject(
