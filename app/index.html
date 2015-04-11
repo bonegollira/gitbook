@@ -21,7 +21,10 @@
 <body>
   <div class="wrapper">
     <main class="Gitbook">
-      <article class="Gitbook-article markdown-body" v-html="html"></article>
+      <article class="Gitbook-article markdown-body" v-html="html">
+      <!-- inject:md -->
+      <!-- endinject -->
+      </article>
     </main>
     <nav class="Agenda">
       <div class="Agenda-icon" v-on="click:removeSearchWord">
