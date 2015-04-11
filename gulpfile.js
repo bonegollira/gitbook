@@ -121,10 +121,19 @@ gulp.task('inject', function () {
     .pipe($.inject(
       gulp.src(latestArticlePath),
       {
-        start: '<!-- inject:{{ext}} -->',
         transform: function (fliePath, file) {
           var markDown = file.contents.toString('utf8');
           return marked(markDown);
+        }
+      }
+    ))
+    .pipe($.inject(
+      gulp.src('.app/md/md.json'),
+      {
+        starttag: 'mdJson: [',
+        endtag: ']',
+        transform: function (fliePath, file) {
+          return file.contents.toString('utf8').replace(/^\[/, '').replace(/\]$/, '');
         }
       }
     ))
