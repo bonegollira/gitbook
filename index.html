@@ -21,7 +21,102 @@
 <body>
   <div class="wrapper">
     <main class="Gitbook">
-      <article class="Gitbook-article markdown-body" v-html="html"></article>
+      <article class="Gitbook-article markdown-body" v-html="html">
+      <!-- inject:md -->
+      <h1 id="promise">Promise</h1>
+      <p>ES6でJavaScriptにPromiseが実装された。
+      Promiseは非同期処理をまとめることのできるAPIという認識。
+      非同期処理の完了後に処理を走らせるとなるとコールバックがよく使われるが、コールバックが続いていくと読みづらいコードとなっていまう。
+      ES6で実装される前まではライブラリが実装していて、ES6で実装されたものと挙動が少し違う。
+      ライブラリで実装していたものが非推奨としてES6で定義されているのでES6をベースに使い方をまとめておく。
+      非推奨となっているものはまとめない。</p>
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise">MDN</a></p>
+      <h2 id="api">API</h2>
+      <pre><code>Promise
+        <span class="hljs-class">.resolve</span>
+        <span class="hljs-class">.reject</span>
+        <span class="hljs-class">.then</span>
+        <span class="hljs-class">.catch</span>
+        <span class="hljs-class">.all</span>
+        .race
+      </code></pre><h2 id="-">基本的な流れ</h2>
+      <pre><code><span class="hljs-keyword">new</span> Promise(<span class="hljs-function"><span class="hljs-keyword">function</span> (</span>resolve, reject) {
+        // resolve() -&gt; <span class="hljs-keyword">then</span>が実行される、何回呼んでも<span class="hljs-keyword">then</span>が呼ばれるのは<span class="hljs-number">1</span>回だけ
+        // reject() -&gt; <span class="hljs-keyword">catch</span>が実行される、何回呼んでも<span class="hljs-keyword">catch</span>が呼ばれるのは<span class="hljs-number">1</span>回だけ
+      })
+        .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (</span>success) {
+          // resolve(arg)でsuccessを受け取れる
+        })
+        .<span class="hljs-keyword">catch</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (</span><span class="hljs-built_in">error</span>) {
+          // reject(arg)で<span class="hljs-built_in">error</span>を受け取れる
+        });
+      
+        // .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (</span>arg) {}, <span class="hljs-function"><span class="hljs-keyword">function</span> (</span><span class="hljs-built_in">error</span>) {}) とも書ける
+      </code></pre><h2 id="-resolve-promise-resolve-"><code>resolve</code> <code>Promise.resolve</code></h2>
+      <p><code>Promise</code>を「解決済み」にする。
+      <code>Promise.resolve()</code>は「解決済み」の<code>Promise</code>を生成する</p>
+      <h2 id="-reject-promise-reject-"><code>reject</code> <code>Promise.reject</code></h2>
+      <p><code>Promise</code>を「棄却済み」にする。
+      <code>Promise.reject()</code>は「棄却済み」の<code>Promise</code>を生成する</p>
+      <h2 id="-then-"><code>then</code></h2>
+      <p><code>Promise</code>が「解決済み」になった場合、<code>then</code>に登録してある処理が呼ばれる。
+      <code>then</code>がメソッドチェーンで続いていれば連続で呼ばれる。
+      しかし<code>resolve</code>から引数を受け継ぐのは1回のみで、連続した<code>then</code>で引数を受け継ぐ場合は<code>then</code>の中で引数を
+      <code>return</code> する必要がある。
+      <code>then</code>で<code>Promise</code>を返した場合、その<code>Promise</code>が以降の<code>then</code>と<code>catch</code>の対象となる。</p>
+      <pre><code><span class="hljs-transposed_variable">Promise.</span>resolve(<span class="hljs-number">10</span>).<span class="hljs-keyword">then</span>(alert).<span class="hljs-keyword">then</span>(alert);
+      <span class="hljs-comment">// alertで10が2回表示される</span>
+      
+      <span class="hljs-transposed_variable">Promise.</span>resolve(<span class="hljs-number">10</span>).<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(num)</span> {</span>
+        alert(num);
+        <span class="hljs-comment">// 次のthenにも引数を渡す</span>
+        <span class="hljs-keyword">return</span> num;
+      }).<span class="hljs-keyword">catch</span>(alert).<span class="hljs-keyword">then</span>(alert);
+      <span class="hljs-comment">// alertで10が1回表示され、undefinedが1回表示される</span>
+      </code></pre><pre><code><span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-number">10</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(num)</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(resolve)</span> </span>{
+          resolve(num + <span class="hljs-number">10</span>);
+        });
+      }).then(alert).catch(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(num)</span> </span>{
+        <span class="hljs-built_in">console</span>.log(num);
+      });
+      <span class="hljs-comment">// alertで20が1回表示される</span>
+      </code></pre><h2 id="-catch-"><code>catch</code></h2>
+      <p><code>Promise</code>が「棄却済み」になった場合、<code>catch</code>に登録してある処理が呼ばれる。
+      <code>catch</code>がメソッドチェーンで続いていれば連続で呼ばれる。
+      しかし<code>reject</code>から引数を受け継ぐのは1回のみで、連続した<code>catch</code>で引数を受け継ぐ場合は<code>catch</code>の中で引数を<code>return</code>する必要がある。
+      <code>catch</code>で<code>Promise</code>を返した場合、その<code>Promise</code>が以降の<code>then</code>と<code>catch</code>の対象となる。</p>
+      <pre><code><span class="hljs-transposed_variable">Promise.</span>reject(<span class="hljs-number">123</span>).<span class="hljs-keyword">catch</span>(alert).<span class="hljs-keyword">catch</span>(alert);
+      <span class="hljs-comment">// alertで123が2回表示される</span>
+      
+      <span class="hljs-transposed_variable">Promise.</span>reject(<span class="hljs-number">10</span>).<span class="hljs-keyword">catch</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(num)</span> {</span>
+        alert(num);
+        <span class="hljs-comment">// 次のcatchにも引数を渡す</span>
+        <span class="hljs-keyword">return</span> num;
+      }).<span class="hljs-keyword">then</span>(alert).<span class="hljs-keyword">catch</span>(alert);
+      </code></pre><pre><code><span class="hljs-built_in">Promise</span>.reject(<span class="hljs-number">10</span>).catch(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(num)</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(_, reject)</span> </span>{
+          reject(num + <span class="hljs-number">10</span>);
+        });
+      }).then(alert).catch(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(num)</span> </span>{
+        <span class="hljs-built_in">console</span>.log(num);
+      });
+      <span class="hljs-comment">// console.logで20が1回表示される</span>
+      </code></pre><h2 id="-promise-all-"><code>Promise.all</code></h2>
+      <p>複数の<code>Promise</code>を受け取り、全てが完了すれば処理を走らせる
+      どれかが<code>reject</code>すれば<code>catch</code>が呼ばれる</p>
+      <pre><code><span class="hljs-keyword">var</span> childPromise = <span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-number">123</span>);
+      <span class="hljs-keyword">var</span> promise = <span class="hljs-built_in">Promise</span>.all([<span class="hljs-literal">true</span>, childPromise]).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(args)</span> </span>{
+        <span class="hljs-comment">// args === [true, 123]</span>
+        <span class="hljs-comment">// argsは渡されたPromiseの数の配列となってくる、値を返さないPromiseはundefined</span>
+      });
+      </code></pre><h2 id="-promise-race-"><code>Promise.race</code></h2>
+      <p>複数の<code>Promise</code>を受け取り、どれか1つが完了すれば処理を走らせる
+      最初の完了した<code>Promise</code>が<code>resolve</code>か<code>reject</code>かで<code>then</code>か<code>catch</code>のどちらが呼ばれるか変わります。
+      引数の使い方などは</p>
+      
+      <!-- endinject -->
+      </article>
     </main>
     <nav class="Agenda">
       <div class="Agenda-icon" v-on="click:removeSearchWord">
