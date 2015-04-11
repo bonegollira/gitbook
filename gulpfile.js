@@ -100,7 +100,6 @@ gulp.task('markdown', function () {
 gulp.task('static', function () {
   return gulp.src([
     './app/**/*',
-    '!./app/index.html',
     '!./app/js',
     '!./app/js/*',
     '!./app/md',
@@ -117,7 +116,7 @@ gulp.task('inject', function () {
   var latestArticleJson = mdjson[0];
   var latestArticlePath = path.resolve('.app/md', latestArticleJson.file);
 
-  return gulp.src('app/index.html')
+  return gulp.src('.app/index.html')
     .pipe($.inject(
       gulp.src(latestArticlePath),
       {
@@ -136,6 +135,10 @@ gulp.task('inject', function () {
           return file.contents.toString('utf8').replace(/^\[/, '').replace(/\]$/, '');
         }
       }
+    ))
+    .pipe($.inject(
+      gulp.src(['.app/components/*.js', '.app/js/*.js'], {read: false}),
+      {relative: true}
     ))
     .pipe(gulp.dest('.app'));
 });
