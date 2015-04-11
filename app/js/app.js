@@ -22,7 +22,7 @@
 
       data: {
         md: '',
-        html: ''
+        html: document.querySelector('.Gitbook-article').innerHTML
       },
 
       methods: {

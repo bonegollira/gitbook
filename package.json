@@ -29,8 +29,11 @@
     "gulp-rename": "*",
     "gulp-stylus": "*",
     "gulp-gh-pages": "*",
+    "gulp-inject": "*",
+    "highlight.js": "*",
     "map-stream": "*",
     "main-bower-files": "*",
+    "marked": "*",
     "run-sequence": "*"
   }
 }
