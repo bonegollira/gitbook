@@ -36,6 +36,7 @@ gulp.task('clean', function () {
 gulp.task('js', function () {
   return gulp.src('./app/js/*.js')
     .pipe($.plumber())
+    .pipe($.babel())
     .pipe($.uglify())
     .pipe(gulp.dest('./.app/js'));
 });

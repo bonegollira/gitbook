@@ -30,6 +30,7 @@
     "gulp-stylus": "*",
     "gulp-gh-pages": "*",
     "gulp-inject": "*",
+    "gulp-babel": "*",
     "highlight.js": "*",
     "map-stream": "*",
     "main-bower-files": "*",
